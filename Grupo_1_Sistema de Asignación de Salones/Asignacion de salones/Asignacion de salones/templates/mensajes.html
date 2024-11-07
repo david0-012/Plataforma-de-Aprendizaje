@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="messaging-container">
+    <h2 class="messaging-title">Sistema de Mensajes</h2>
+    
+    <!-- Formulario para enviar nuevo mensaje -->
+    <div class="message-form-container">
+        <h3 class="section-title">Enviar Nuevo Mensaje</h3>
+        <form method="POST" action="{{ url_for('enviar_mensaje') }}" class="message-form">
+            <div class="form-group">
+                <label for="destinatario_id">Destinatario:</label>
+                <select name="destinatario_id" id="destinatario_id" class="form-control" required>
+                    {% for usuario in usuarios %}
+                    <option value="{{ usuario.id }}">{{ usuario.username }} ({{ usuario.rol }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="asunto">Asunto:</label>
+                <input type="text" name="asunto" id="asunto" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="contenido">Mensaje:</label>
+                <textarea name="contenido" id="contenido" class="form-control" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn-send">Enviar Mensaje</button>
+        </form>
+    </div>
+
+    <!-- Bandeja de entrada -->
+    <div class="inbox-container">
+        <h3 class="section-title">Mensajes Recibidos</h3>
+        <div class="messages-list">
+            {% for mensaje in mensajes_recibidos %}
+            <div class="message-card {% if not mensaje.leido %}unread{% endif %}">
+                <div class="message-header">
+                    <span class="sender">De: {{ mensaje.remitente.username }} ({{ mensaje.remitente.rol }})</span>
+                    <span class="date">{{ mensaje.fecha_envio.strftime('%d/%m/%Y %H:%M') }}</span>
+                </div>
+                <div class="message-subject">{{ mensaje.asunto }}</div>
+                <div class="message-content">{{ mensaje.contenido }}</div>
+                <div class="message-actions">
+                    {% if not mensaje.leido %}
+                    <a href="{{ url_for('marcar_leido', mensaje_id=mensaje.id) }}" class="btn-action">Marcar como leído</a>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('eliminar_mensaje', mensaje_id=mensaje.id) }}" style="display: inline;">
+                        <button type="submit" class="btn-action delete" onclick="return confirm('¿Estás seguro de eliminar este mensaje?')">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <p class="no-messages">No hay mensajes recibidos</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Mensajes enviados -->
+    <div class="sent-container">
+        <h3 class="section-title">Mensajes Enviados</h3>
+        <div class="messages-list">
+            {% for mensaje in mensajes_enviados %}
+            <div class="message-card">
+                <div class="message-header">
+                    <span class="recipient">Para: {{ mensaje.destinatario.username }} ({{ mensaje.destinatario.rol }})</span>
+                    <span class="date">{{ mensaje.fecha_envio.strftime('%d/%m/%Y %H:%M') }}</span>
+                </div>
+                <div class="message-subject">{{ mensaje.asunto }}</div>
+                <div class="message-content">{{ mensaje.contenido }}</div>
+                <div class="message-actions">
+                    <form method="POST" action="{{ url_for('eliminar_mensaje', mensaje_id=mensaje.id) }}" style="display: inline;">
+                        <button type="submit" class="btn-action delete" onclick="return confirm('¿Estás seguro de eliminar este mensaje?')">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <p class="no-messages">No hay mensajes enviados</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .messaging-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .messaging-title {
+        text-align: center;
+        color: #002855;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+    }
+
+    .message-form-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .btn-send {
+        background: #002855;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .btn-send:hover {
+        background: #0171BB;
+    }
+
+    .messages-list {
+        margin-top: 20px;
+    }
+
+    .message-card {
+        background: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .unread {
+        border-left: 4px solid #0171BB;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        color: #666;
+    }
+
+    .message-subject {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .message-content {
+        margin-bottom: 15px;
+    }
+
+    .message-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-action {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.9em;
+    }
+
+    .btn-action.delete {
+        background: #dc3545;
+        color: white;
+    }
+
+    .no-messages {
+        text-align: center;
+        color: #666;
+        padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .messaging-container {
+            padding: 10px;
+        }
+
+        .messaging-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}

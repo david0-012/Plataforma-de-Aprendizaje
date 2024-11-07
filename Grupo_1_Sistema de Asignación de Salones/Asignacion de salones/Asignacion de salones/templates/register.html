@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="title">Registrarse</h2>
+<form method="POST" class="register-form" onsubmit="return validateForm()">
+    <div class="mb-3">
+        <label for="username" class="form-label">Usuario</label>
+        <!-- Solo permite letras mayúsculas o minúsculas -->
+        <input type="text" class="form-control input-animated" id="username" name="username" required pattern="[a-zA-Z]+" title="El nombre de usuario solo puede contener letras.">
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <!-- Contraseña alfanumérica entre 6 y 20 caracteres -->
+        <input type="password" class="form-control input-animated" id="password" name="password" required pattern="[a-zA-Z0-9]{6,20}" title="La contraseña debe ser alfanumérica y tener entre 6 y 20 caracteres.">
+    </div>
+    <div class="mb-3">
+        <label for="rol" class="form-label">Rol</label>
+        <select class="form-select input-animated" id="rol" name="rol" required>
+            <option value="estudiante">Estudiante</option>
+            <option value="profesor">Profesor</option>
+            <option value="admin">Administrador</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-animated">Registrarse</button>
+</form>
+
+<!-- Estilos CSS -->
+<style>
+    /* Fondo sobrio */
+    body {
+        background-color: #F4F7F9;
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Título estilizado */
+    .title {
+        text-align: center;
+        color: #002855;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    /* Estilo del formulario */
+    .register-form {
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 2.5rem;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Inputs con bordes estilizados */
+    .input-animated {
+        border: 2px solid #BDC3C7;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    /* Foco en los inputs */
+    .input-animated:focus {
+        border-color: #0171BB;
+        box-shadow: 0 0 8px rgba(1, 113, 187, 0.3);
+        outline: none;
+    }
+
+    /* Botón con colores institucionales */
+    .btn-animated {
+        width: 100%;
+        padding: 12px 18px;
+        background: #002855;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Hover para el botón */
+    .btn-animated:hover {
+        background: #0171BB;
+    }
+
+    /* Etiquetas estilizadas */
+    .form-label {
+        color: #002855;
+        font-weight: bold;
+    }
+
+    /* Ajustes en los campos */
+    .mb-3 {
+        margin-bottom: 20px;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+        .register-form {
+            padding: 1.5rem;
+        }
+
+        .title {
+            font-size: 2rem;
+        }
+
+        .btn-animated {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<!-- JavaScript para validaciones adicionales -->
+<script>
+    function validateForm() {
+        // Validar campo de usuario para que no tenga números ni caracteres especiales
+        const username = document.getElementById('username').value;
+        const usernamePattern = /^[a-zA-Z]+$/;
+        if (!usernamePattern.test(username)) {
+            alert('El nombre de usuario solo puede contener letras.');
+            return false;
+        }
+
+        // Validar que la contraseña sea alfanumérica
+        const password = document.getElementById('password').value;
+        const passwordPattern = /^[a-zA-Z0-9]{6,20}$/;
+        if (!passwordPattern.test(password)) {
+            alert('La contraseña debe ser alfanumérica y tener entre 6 y 20 caracteres.');
+            return false;
+        }
+
+        return true;
+    }
+</script>
+{% endblock %}

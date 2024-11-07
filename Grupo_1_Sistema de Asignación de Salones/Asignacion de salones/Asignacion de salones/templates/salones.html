@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="title">Gestión de Salones</h2>
+<a href="{{ url_for('nuevo_salon') }}" class="btn btn-primary mb-3 btn-animated">Nuevo Salón</a>
+<table class="table table-striped">
+    <thead class="table-header">
+        <tr>
+            <th>Nombre</th>
+            <th>Capacidad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for salon in salones %}
+        <tr>
+            <td>{{ salon.nombre }}</td>
+            <td>{{ salon.capacidad }}</td>
+            <td>
+                <a href="{{ url_for('editar_salon', id=salon.id) }}" class="btn btn-sm btn-warning btn-animated">Editar</a>
+                <form action="{{ url_for('eliminar_salon', id=salon.id) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-sm btn-danger btn-animated" onclick="return confirm('¿Estás seguro de querer eliminar este salón?')">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Estilos CSS -->
+<style>
+    /* Fondo sobrio */
+    body {
+        background-color: #F4F7F9;
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Título estilizado */
+    .title {
+        text-align: center;
+        color: #002855;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    /* Estilo de la tabla */
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        text-align: center;
+    }
+
+    .table-header {
+        background-color: #002855;
+        color: #ffffff;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f9f9f9;
+    }
+
+    /* Botones estilizados */
+    .btn-animated {
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-animated:hover {
+        transform: scale(1.05);
+    }
+
+    /* Margen entre botones */
+    .mb-3 {
+        margin-bottom: 20px;
+    }
+</style>
+
+{% endblock %}
